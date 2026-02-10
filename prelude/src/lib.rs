@@ -17,6 +17,17 @@ pub trait Merge<Other = Self> {
 pub use proc_macro_impls::Merge;
 
 #[inline]
+pub fn merge_option<T: Merge>(left: &mut Option<T>, right: Option<T>) {
+	if let Some(right) = right {
+		if let Some(left) = left {
+			left.merge(right);
+		} else {
+			*left = Some(right);
+		}
+	}
+}
+
+#[inline]
 pub fn overwrite_if_false(left: &mut bool, right: bool) {
 	*left &= right;
 }
@@ -48,9 +59,7 @@ pub fn overwrite_if_none<T>(left: &mut Option<T>, right: Option<T>) {
 impl<T> Merge for Option<T> {
 	#[inline]
 	fn merge(&mut self, other: Self) {
-		if self.is_none()
-			&& let Some(other) = other
-		{
+		if let Some(other) = other {
 			*self = Some(other);
 		}
 	}
