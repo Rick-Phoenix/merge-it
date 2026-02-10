@@ -225,3 +225,12 @@ mod hashbrown_impls {
 		}
 	}
 }
+
+#[doc(hidden)]
+#[inline]
+pub fn __apply<I, Other, O, F>(input: &mut I, other: Other, f: F) -> O
+where
+	F: FnOnce(&mut I, Other) -> O,
+{
+	f(input, other)
+}

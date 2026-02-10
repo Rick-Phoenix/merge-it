@@ -1,10 +1,12 @@
-use prelude::*;
+use merge_it::*;
 
 #[derive(Merge, Default)]
 struct Test {
 	vec: Vec<i32>,
 	#[merge(with = overwrite_if_true)]
 	boolean: bool,
+	#[merge(with = |left, right| *left = right)]
+	with_closure: String,
 }
 
 #[test]
@@ -14,10 +16,12 @@ fn basic_test() {
 	let other = Test {
 		vec: vec![1, 2, 3],
 		boolean: true,
+		with_closure: "abc".into(),
 	};
 
 	initial.merge(other);
 
 	assert!(initial.boolean);
 	assert_eq!(initial.vec, &[1, 2, 3]);
+	assert_eq!(initial.with_closure, "abc");
 }

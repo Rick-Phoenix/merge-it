@@ -93,7 +93,7 @@ fn handle(input: &ItemStruct) -> syn::Result<TokenStream2> {
 		match merge_expr.as_ref().or(default_expr.as_ref()) {
 			Some(PathOrClosure::Closure(closure)) => {
 				quote_spanned! {span=>
-					::prelude::apply(closure, self.#ident);
+					::merge_it::__apply(&mut self.#ident, other.#ident, #closure);
 				}
 			}
 			Some(PathOrClosure::Path(path)) => {
@@ -103,14 +103,14 @@ fn handle(input: &ItemStruct) -> syn::Result<TokenStream2> {
 			}
 			None => {
 				quote_spanned! {span=>
-					<#type_ as ::prelude::Merge>::merge(&mut self.#ident, other.#ident);
+					<#type_ as ::merge_it::Merge>::merge(&mut self.#ident, other.#ident);
 				}
 			}
 		}
 	});
 
 	Ok(quote! {
-		impl ::prelude::Merge for #struct_ident {
+		impl ::merge_it::Merge for #struct_ident {
 			fn merge(&mut self, other: Self) {
 				#(#merge_fn_body)*
 			}

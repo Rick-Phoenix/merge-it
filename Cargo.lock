@@ -42,22 +42,22 @@ dependencies = [
 ]
 
 [[package]]
-name = "ordermap"
-version = "1.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cfa78c92071bbd3628c22b1a964f7e0eb201dc1456555db072beb1662ecd6715"
-dependencies = [
- "indexmap",
-]
-
-[[package]]
-name = "prelude"
+name = "merge-it"
 version = "0.1.0"
 dependencies = [
  "hashbrown",
  "indexmap",
  "ordermap",
  "proc-macro-impls",
+]
+
+[[package]]
+name = "ordermap"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cfa78c92071bbd3628c22b1a964f7e0eb201dc1456555db072beb1662ecd6715"
+dependencies = [
+ "indexmap",
 ]
 
 [[package]]

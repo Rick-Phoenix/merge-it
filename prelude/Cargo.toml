@@ -1,5 +1,5 @@
 [package]
-name = "prelude"
+name = "merge-it"
 license.workspace = true
 version.workspace = true
 edition.workspace = true
