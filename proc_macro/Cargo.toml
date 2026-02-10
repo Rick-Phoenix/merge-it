@@ -1,0 +1,18 @@
+[package]
+name = "proc-macro-impls"
+license.workspace = true
+version.workspace = true
+edition.workspace = true
+repository.workspace = true
+
+[package.metadata.docs]
+rs = { all-features = true, rustdoc-args = ["--cfg", "docsrs"] }
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1"
+quote = "1"
+syn = { version = "2", features = ["extra-traits", "full"] }
+syn-utils = "0.5"

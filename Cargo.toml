@@ -1,0 +1,9 @@
+[workspace]
+resolver = "3"
+members = ["prelude", "proc_macro"]
+
+[workspace.package]
+version = "0.1.0"
+license = "Apache-2.0"
+repository = "https://github.com/Rick-Phoenix/merge-it"
+edition = "2024"

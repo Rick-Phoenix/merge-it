@@ -1,0 +1,21 @@
+[package]
+name = "prelude"
+license.workspace = true
+version.workspace = true
+edition.workspace = true
+repository.workspace = true
+
+[dependencies]
+hashbrown = { version = "0.16", optional = true }
+indexmap = { version = "2", optional = true, default-features = false }
+ordermap = { version = "1", optional = true, default-features = false }
+proc-macro-impls = { path = "../proc_macro/" }
+
+[features]
+default = ["std", "alloc"]
+
+indexmap = ["alloc", "dep:indexmap"]
+hashbrown = ["alloc", "dep:hashbrown"]
+ordermap = ["alloc", "dep:ordermap"]
+std = ["ordermap?/std", "indexmap?/std"]
+alloc = []
