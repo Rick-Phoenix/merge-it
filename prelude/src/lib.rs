@@ -70,9 +70,24 @@ mod alloc_impls {
 	use super::*;
 
 	use alloc::{
+		boxed::Box,
 		collections::{BTreeMap, BTreeSet},
 		vec::Vec,
 	};
+
+	impl<T: Merge> Merge<Box<T>> for Box<T> {
+		#[inline]
+		fn merge(&mut self, other: Self) {
+			T::merge(self, *other);
+		}
+	}
+
+	impl<T: Merge> Merge<T> for Box<T> {
+		#[inline]
+		fn merge(&mut self, other: T) {
+			T::merge(self, other);
+		}
+	}
 
 	impl<I, T> Merge<I> for Vec<T>
 	where
