@@ -17,7 +17,7 @@ pub trait Merge<Other = Self> {
 pub use proc_macro_impls::Merge;
 
 #[inline]
-pub fn merge_option<T: Merge>(left: &mut Option<T>, right: Option<T>) {
+pub fn merge_options<T: Merge>(left: &mut Option<T>, right: Option<T>) {
 	if let Some(right) = right {
 		if let Some(left) = left {
 			left.merge(right);
