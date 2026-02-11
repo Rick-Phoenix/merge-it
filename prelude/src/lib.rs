@@ -66,12 +66,15 @@ impl<T> Merge for Option<T> {
 }
 
 #[cfg(feature = "alloc")]
+pub use alloc_impls::*;
+
+#[cfg(feature = "alloc")]
 mod alloc_impls {
 	use super::*;
 
 	use alloc::{
 		boxed::Box,
-		collections::{BTreeMap, BTreeSet},
+		collections::{BTreeMap, BTreeSet, btree_map::Entry},
 		vec::Vec,
 	};
 
@@ -120,20 +123,40 @@ mod alloc_impls {
 			self.extend(other);
 		}
 	}
+
+	pub fn merge_btree_maps<K, V>(left: &mut BTreeMap<K, V>, right: BTreeMap<K, V>)
+	where
+		K: Ord,
+		V: Merge,
+	{
+		for (key, val) in right {
+			match left.entry(key) {
+				Entry::Vacant(vacant) => {
+					vacant.insert(val);
+				}
+				Entry::Occupied(mut occupied) => {
+					occupied.get_mut().merge(val);
+				}
+			};
+		}
+	}
 }
+
+#[cfg(feature = "indexmap")]
+pub use indexmap_impls::*;
 
 #[cfg(feature = "indexmap")]
 mod indexmap_impls {
 	use super::*;
 
 	use core::hash::{BuildHasher, Hash};
-	use indexmap::{IndexMap, IndexSet};
+	use indexmap::{IndexMap, IndexSet, map::Entry};
 
 	impl<I, T, S> Merge<I> for IndexSet<T, S>
 	where
 		I: IntoIterator<Item = T>,
 		T: Eq + Hash,
-		S: BuildHasher + Default,
+		S: BuildHasher,
 	{
 		#[inline]
 		fn merge(&mut self, other: I) {
@@ -145,27 +168,48 @@ mod indexmap_impls {
 	where
 		I: IntoIterator<Item = (K, V)>,
 		K: Eq + Hash,
-		S: BuildHasher + Default,
+		S: BuildHasher,
 	{
 		#[inline]
 		fn merge(&mut self, other: I) {
 			self.extend(other);
 		}
 	}
+
+	pub fn merge_index_maps<K, V, S>(left: &mut IndexMap<K, V, S>, right: IndexMap<K, V, S>)
+	where
+		K: Eq + Hash,
+		V: Merge,
+		S: BuildHasher,
+	{
+		for (key, val) in right {
+			match left.entry(key) {
+				Entry::Vacant(vacant) => {
+					vacant.insert(val);
+				}
+				Entry::Occupied(mut occupied) => {
+					occupied.get_mut().merge(val);
+				}
+			};
+		}
+	}
 }
+
+#[cfg(feature = "ordermap")]
+pub use ordermap_impls::*;
 
 #[cfg(feature = "ordermap")]
 mod ordermap_impls {
 	use super::*;
 
 	use core::hash::{BuildHasher, Hash};
-	use ordermap::{OrderMap, OrderSet};
+	use ordermap::{OrderMap, OrderSet, map::Entry};
 
 	impl<I, T, S> Merge<I> for OrderSet<T, S>
 	where
 		I: IntoIterator<Item = T>,
 		T: Eq + Hash,
-		S: BuildHasher + Default,
+		S: BuildHasher,
 	{
 		#[inline]
 		fn merge(&mut self, other: I) {
@@ -177,27 +221,48 @@ mod ordermap_impls {
 	where
 		I: IntoIterator<Item = (K, V)>,
 		K: Eq + Hash,
-		S: BuildHasher + Default,
+		S: BuildHasher,
 	{
 		#[inline]
 		fn merge(&mut self, other: I) {
 			self.extend(other);
 		}
 	}
+
+	pub fn merge_order_maps<K, V, S>(left: &mut OrderMap<K, V, S>, right: OrderMap<K, V, S>)
+	where
+		K: Eq + Hash,
+		V: Merge,
+		S: BuildHasher,
+	{
+		for (key, val) in right {
+			match left.entry(key) {
+				Entry::Vacant(vacant) => {
+					vacant.insert(val);
+				}
+				Entry::Occupied(mut occupied) => {
+					occupied.get_mut().merge(val);
+				}
+			};
+		}
+	}
 }
+
+#[cfg(feature = "std")]
+pub use std_impls::*;
 
 #[cfg(feature = "std")]
 mod std_impls {
 	use super::*;
 
 	use core::hash::{BuildHasher, Hash};
-	use std::collections::{HashMap, HashSet};
+	use std::collections::{HashMap, HashSet, hash_map::Entry};
 
 	impl<I, T, S> Merge<I> for HashSet<T, S>
 	where
 		I: IntoIterator<Item = T>,
 		T: Eq + Hash,
-		S: BuildHasher + Default,
+		S: BuildHasher,
 	{
 		#[inline]
 		fn merge(&mut self, other: I) {
@@ -209,27 +274,48 @@ mod std_impls {
 	where
 		I: IntoIterator<Item = (K, V)>,
 		K: Eq + Hash,
-		S: BuildHasher + Default,
+		S: BuildHasher,
 	{
 		#[inline]
 		fn merge(&mut self, other: I) {
 			self.extend(other);
 		}
 	}
+
+	pub fn merge_hash_maps<K, V, S>(left: &mut HashMap<K, V, S>, right: HashMap<K, V, S>)
+	where
+		K: Eq + Hash,
+		V: Merge,
+		S: BuildHasher,
+	{
+		for (key, val) in right {
+			match left.entry(key) {
+				Entry::Vacant(vacant) => {
+					vacant.insert(val);
+				}
+				Entry::Occupied(mut occupied) => {
+					occupied.get_mut().merge(val);
+				}
+			};
+		}
+	}
 }
+
+#[cfg(feature = "hashbrown")]
+pub use hashbrown_impls::*;
 
 #[cfg(feature = "hashbrown")]
 mod hashbrown_impls {
 	use super::*;
 
 	use core::hash::{BuildHasher, Hash};
-	use hashbrown::{HashMap, HashSet};
+	use hashbrown::{HashMap, HashSet, hash_map::Entry};
 
 	impl<I, T, S> Merge<I> for HashSet<T, S>
 	where
 		I: IntoIterator<Item = T>,
 		T: Eq + Hash,
-		S: BuildHasher + Default,
+		S: BuildHasher,
 	{
 		#[inline]
 		fn merge(&mut self, other: I) {
@@ -241,11 +327,29 @@ mod hashbrown_impls {
 	where
 		I: IntoIterator<Item = (K, V)>,
 		K: Eq + Hash,
-		S: BuildHasher + Default,
+		S: BuildHasher,
 	{
 		#[inline]
 		fn merge(&mut self, other: I) {
 			self.extend(other);
+		}
+	}
+
+	pub fn merge_hashbrown_maps<K, V, S>(left: &mut HashMap<K, V, S>, right: HashMap<K, V, S>)
+	where
+		K: Eq + Hash,
+		V: Merge,
+		S: BuildHasher,
+	{
+		for (key, val) in right {
+			match left.entry(key) {
+				Entry::Vacant(vacant) => {
+					vacant.insert(val);
+				}
+				Entry::Occupied(mut occupied) => {
+					occupied.get_mut().merge(val);
+				}
+			};
 		}
 	}
 }
