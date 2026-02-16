@@ -8,6 +8,9 @@ repository.workspace = true
 [package.metadata.docs]
 rs = { all-features = true, rustdoc-args = ["--cfg", "docsrs"] }
 
+[dev-dependencies]
+merge-it = { path = "../prelude/" }
+
 [lib]
 proc-macro = true
 

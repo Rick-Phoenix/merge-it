@@ -2,6 +2,7 @@
 #![deny(clippy::alloc_instead_of_core)]
 #![deny(clippy::std_instead_of_alloc)]
 #![deny(clippy::std_instead_of_core)]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 
 #[cfg(any(test, feature = "std"))]
 extern crate std;
@@ -9,6 +10,9 @@ extern crate std;
 #[cfg(any(test, feature = "alloc"))]
 extern crate alloc;
 
+/// A trait for merging values.
+///
+/// Implemented by default for most collections and for [`Option`].
 pub trait Merge<Other = Self> {
 	fn merge(&mut self, other: Other);
 }
@@ -16,6 +20,7 @@ pub trait Merge<Other = Self> {
 #[doc(inline)]
 pub use proc_macro_impls::Merge;
 
+/// Merges two [`Option`]s of values that implement [`Merge`] themselves.
 #[inline]
 pub fn merge_options<T: Merge>(left: &mut Option<T>, right: Option<T>) {
 	if let Some(right) = right {
@@ -27,21 +32,25 @@ pub fn merge_options<T: Merge>(left: &mut Option<T>, right: Option<T>) {
 	}
 }
 
+/// When merging, it overwrites the previous value only if the new value is `false`
 #[inline]
 pub fn overwrite_if_false(left: &mut bool, right: bool) {
 	*left &= right;
 }
 
+/// When merging, it overwrites the previous value only if the new value is `true`
 #[inline]
 pub fn overwrite_if_true(left: &mut bool, right: bool) {
 	*left |= right;
 }
 
+/// When merging, it always overwrites the previous value
 #[inline]
 pub fn overwrite_always<T>(left: &mut T, right: T) {
 	*left = right;
 }
 
+/// When merging, overwrite the previous value only if the new value is NOT the default
 #[inline]
 pub fn overwrite_if_not_default<T: Default + PartialEq>(left: &mut T, right: T) {
 	if right != T::default() {
@@ -49,6 +58,9 @@ pub fn overwrite_if_not_default<T: Default + PartialEq>(left: &mut T, right: T) 
 	}
 }
 
+/// When merging [`Option`]s, overwrite the previous value only if the new value is None
+///
+/// This overrides the default merging behaviour for [`Option`], which is to overwrite only if the new value is [`Some`].
 #[inline]
 pub fn overwrite_if_none<T>(left: &mut Option<T>, right: Option<T>) {
 	if right.is_none() {
@@ -124,6 +136,9 @@ mod alloc_impls {
 		}
 	}
 
+	/// Deeply merges maps with values that implement [`Merge`].
+	///
+	/// If a value is already present in the map, it is not replaced but merged with the new value.
 	pub fn merge_btree_maps<K, V>(left: &mut BTreeMap<K, V>, right: BTreeMap<K, V>)
 	where
 		K: Ord,
@@ -176,6 +191,9 @@ mod indexmap_impls {
 		}
 	}
 
+	/// Deeply merges maps with values that implement [`Merge`].
+	///
+	/// If a value is already present in the map, it is not replaced but merged with the new value.
 	pub fn merge_index_maps<K, V, S>(left: &mut IndexMap<K, V, S>, right: IndexMap<K, V, S>)
 	where
 		K: Eq + Hash,
@@ -229,6 +247,9 @@ mod ordermap_impls {
 		}
 	}
 
+	/// Deeply merges maps with values that implement [`Merge`].
+	///
+	/// If a value is already present in the map, it is not replaced but merged with the new value.
 	pub fn merge_order_maps<K, V, S>(left: &mut OrderMap<K, V, S>, right: OrderMap<K, V, S>)
 	where
 		K: Eq + Hash,
@@ -282,6 +303,9 @@ mod std_impls {
 		}
 	}
 
+	/// Deeply merges maps with values that implement [`Merge`].
+	///
+	/// If a value is already present in the map, it is not replaced but merged with the new value.
 	pub fn merge_hash_maps<K, V, S>(left: &mut HashMap<K, V, S>, right: HashMap<K, V, S>)
 	where
 		K: Eq + Hash,
@@ -335,6 +359,9 @@ mod hashbrown_impls {
 		}
 	}
 
+	/// Deeply merges maps with values that implement [`Merge`].
+	///
+	/// If a value is already present in the map, it is not replaced but merged with the new value.
 	pub fn merge_hashbrown_maps<K, V, S>(left: &mut HashMap<K, V, S>, right: HashMap<K, V, S>)
 	where
 		K: Eq + Hash,

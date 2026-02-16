@@ -64,6 +64,7 @@ dependencies = [
 name = "proc-macro-impls"
 version = "0.1.0"
 dependencies = [
+ "merge-it",
  "proc-macro2",
  "quote",
  "syn",
