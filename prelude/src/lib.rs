@@ -143,11 +143,12 @@ mod alloc_impls {
 		}
 	}
 
-	/// Deeply merges maps with values that implement [`Merge`].
+	/// Merges maps with values that implement [`Merge`].
 	///
 	/// If a value is already present in the map, it is not replaced but merged with the new value.
-	pub fn merge_btree_maps<K, V>(left: &mut BTreeMap<K, V>, right: BTreeMap<K, V>)
+	pub fn merge_btree_maps<K, V, I>(left: &mut BTreeMap<K, V>, right: I)
 	where
+		I: IntoIterator<Item = (K, V)>,
 		K: Ord,
 		V: Merge,
 	{
@@ -198,16 +199,27 @@ mod indexmap_impls {
 		}
 	}
 
-	/// Deeply merges maps with values that implement [`Merge`].
+	/// Merges maps with values that implement [`Merge`].
 	///
 	/// If a value is already present in the map, it is not replaced but merged with the new value.
-	pub fn merge_index_maps<K, V, S>(left: &mut IndexMap<K, V, S>, right: IndexMap<K, V, S>)
+	pub fn merge_index_maps<K, V, S, I>(left: &mut IndexMap<K, V, S>, right: I)
 	where
+		I: IntoIterator<Item = (K, V)>,
 		K: Eq + Hash,
 		V: Merge,
 		S: BuildHasher,
 	{
-		for (key, val) in right {
+		let iter = right.into_iter();
+		let (lower_len, _) = iter.size_hint();
+		let reserve = if left.is_empty() {
+			lower_len
+		} else {
+			lower_len.div_ceil(2)
+		};
+
+		left.reserve(reserve);
+
+		for (key, val) in iter {
 			match left.entry(key) {
 				Entry::Vacant(vacant) => {
 					vacant.insert(val);
@@ -254,16 +266,27 @@ mod ordermap_impls {
 		}
 	}
 
-	/// Deeply merges maps with values that implement [`Merge`].
+	/// Merges maps with values that implement [`Merge`].
 	///
 	/// If a value is already present in the map, it is not replaced but merged with the new value.
-	pub fn merge_order_maps<K, V, S>(left: &mut OrderMap<K, V, S>, right: OrderMap<K, V, S>)
+	pub fn merge_order_maps<K, V, S, I>(left: &mut OrderMap<K, V, S>, right: I)
 	where
+		I: IntoIterator<Item = (K, V)>,
 		K: Eq + Hash,
 		V: Merge,
 		S: BuildHasher,
 	{
-		for (key, val) in right {
+		let iter = right.into_iter();
+		let (lower_len, _) = iter.size_hint();
+		let reserve = if left.is_empty() {
+			lower_len
+		} else {
+			lower_len.div_ceil(2)
+		};
+
+		left.reserve(reserve);
+
+		for (key, val) in iter {
 			match left.entry(key) {
 				Entry::Vacant(vacant) => {
 					vacant.insert(val);
@@ -310,16 +333,27 @@ mod std_impls {
 		}
 	}
 
-	/// Deeply merges maps with values that implement [`Merge`].
+	/// Merges maps with values that implement [`Merge`].
 	///
 	/// If a value is already present in the map, it is not replaced but merged with the new value.
-	pub fn merge_hash_maps<K, V, S>(left: &mut HashMap<K, V, S>, right: HashMap<K, V, S>)
+	pub fn merge_hash_maps<K, V, S, I>(left: &mut HashMap<K, V, S>, right: I)
 	where
+		I: IntoIterator<Item = (K, V)>,
 		K: Eq + Hash,
 		V: Merge,
 		S: BuildHasher,
 	{
-		for (key, val) in right {
+		let iter = right.into_iter();
+		let (lower_len, _) = iter.size_hint();
+		let reserve = if left.is_empty() {
+			lower_len
+		} else {
+			lower_len.div_ceil(2)
+		};
+
+		left.reserve(reserve);
+
+		for (key, val) in iter {
 			match left.entry(key) {
 				Entry::Vacant(vacant) => {
 					vacant.insert(val);
@@ -366,16 +400,27 @@ mod hashbrown_impls {
 		}
 	}
 
-	/// Deeply merges maps with values that implement [`Merge`].
+	/// Merges maps with values that implement [`Merge`].
 	///
 	/// If a value is already present in the map, it is not replaced but merged with the new value.
-	pub fn merge_hashbrown_maps<K, V, S>(left: &mut HashMap<K, V, S>, right: HashMap<K, V, S>)
+	pub fn merge_hashbrown_maps<K, V, S, I>(left: &mut HashMap<K, V, S>, right: I)
 	where
+		I: IntoIterator<Item = (K, V)>,
 		K: Eq + Hash,
 		V: Merge,
 		S: BuildHasher,
 	{
-		for (key, val) in right {
+		let iter = right.into_iter();
+		let (lower_len, _) = iter.size_hint();
+		let reserve = if left.is_empty() {
+			lower_len
+		} else {
+			lower_len.div_ceil(2)
+		};
+
+		left.reserve(reserve);
+
+		for (key, val) in iter {
 			match left.entry(key) {
 				Entry::Vacant(vacant) => {
 					vacant.insert(val);

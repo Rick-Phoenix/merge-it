@@ -2,6 +2,13 @@
 resolver = "3"
 members = ["prelude", "proc_macro"]
 
+[workspace.metadata.release]
+tag = false
+allow-branch = ["main"]
+enable-all-features = true
+shared-version = true
+tag-name = "v{{version}}"
+
 [workspace.package]
 version = "0.1.0"
 license = "Apache-2.0"

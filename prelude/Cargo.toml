@@ -7,6 +7,12 @@ repository.workspace = true
 keywords = ["merge", "no_std"]
 description = "Macro for merging structs and enums"
 
+[package.metadata.docs]
+rs = { all-features = true, rustdoc-args = ["--cfg", "docsrs"] }
+
+[package.metadata.release]
+tag = true
+
 [dependencies]
 hashbrown = { version = "0.16", optional = true }
 indexmap = { version = "2", optional = true, default-features = false }
