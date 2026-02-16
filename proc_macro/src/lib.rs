@@ -20,7 +20,25 @@ impl FieldData {
 pub fn merge_derive(input: TokenStream) -> TokenStream {
 	let input = parse_macro_input!(input as ItemStruct);
 
-	handle(&input).unwrap_or_compile_error().into()
+	let output = match handle(&input) {
+		Ok(impl_tokens) => impl_tokens,
+		Err(e) => {
+			let err = e.into_compile_error();
+			let struct_ident = &input.ident;
+
+			quote! {
+				impl ::merge_it::Merge for #struct_ident {
+					fn merge(&mut self, other: Self) {
+						unimplemented!()
+					}
+				}
+
+				#err
+			}
+		}
+	};
+
+	output.into()
 }
 
 fn handle(input: &ItemStruct) -> syn::Result<TokenStream2> {
