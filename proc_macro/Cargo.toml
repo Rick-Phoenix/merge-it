@@ -4,6 +4,7 @@ license.workspace = true
 version.workspace = true
 edition.workspace = true
 repository.workspace = true
+description = "Proc macro logic for the merge-it crate"
 
 [package.metadata.docs]
 rs = { all-features = true, rustdoc-args = ["--cfg", "docsrs"] }

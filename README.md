@@ -3,11 +3,13 @@ A small utility crate for merging values, mostly useful when dealing with things
 Inspired by the [merge](https://crates.io/crates/merge) crate, with a few improvements:
 
 1. If no merging strategy is specified, [`Merge::merge`](crate::Merge::merge) is used by default.
-2. [`Merge::merge`](crate::Merge::merge) is automatically implemented for vectors, BTreeMap/BTreeSet, HashMap/HashSet (both the std and the hashbrown variants for `no_std` support), IndexMap/IndexSet, OrderMap/OrderSet
-2. [`Merge::merge`](crate::Merge::merge) is automatically implemented for `Option`, such that an option value is overwritten only if the new value is `Some`.
-3. Exports a variety of merging functions, like merging values in maps (rather than overwriting them) or overwriting a value only if the new value is not the default for that type.
-4. Allows usage of closures, other than paths, for defining merging strategies at the field level.
-5. Can be derived automatically for enums if all variants contain a single unnamed field.
+2. [`Merge`](crate::Merge) is automatically implemented for all commonly used collections such as vectors, BTreeMap/BTreeSet, HashMap/HashSet (both the std and the hashbrown variants for `no_std` support), IndexMap/IndexSet, OrderMap/OrderSet.
+3. Collections with the same kind of iterators (i.e. single value vs key/value tuple) implement [`Merge`](crate::Merge) with one another.
+3. [`Merge::merge`](crate::Merge::merge) is automatically implemented for `Option`, such that an option value is overwritten only if the new value is `Some`.
+4. Exports a variety of merging functions, like merging values in maps (rather than overwriting them) or overwriting a value only if the new value is not the default for that type.
+5. Allows usage of closures, other than paths, for defining merging strategies at the field level.
+6. [`Merge`](crate::Merge) can be derived automatically for enums if all variants contain a single unnamed field.
+7. [`Merge`](crate::Merge) can be implemented for different target types and not only for `Self`
 
 ```rust
 use merge_it::Merge;
