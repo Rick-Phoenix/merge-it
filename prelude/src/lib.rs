@@ -25,7 +25,7 @@ pub trait Merge<Other = Self> {
 }
 
 #[doc(inline)]
-pub use proc_macro_impls::Merge;
+pub use merge_it_derive::Merge;
 
 /// Merges two [`Option`]s of values that implement [`Merge`] themselves.
 #[inline]

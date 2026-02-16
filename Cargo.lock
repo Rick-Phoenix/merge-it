@@ -63,8 +63,19 @@ dependencies = [
  "document-features",
  "hashbrown",
  "indexmap",
+ "merge-it-derive",
  "ordermap",
- "proc-macro-impls",
+]
+
+[[package]]
+name = "merge-it-derive"
+version = "0.1.0"
+dependencies = [
+ "merge-it",
+ "proc-macro2",
+ "quote",
+ "syn",
+ "syn-utils",
 ]
 
 [[package]]
@@ -74,17 +85,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cfa78c92071bbd3628c22b1a964f7e0eb201dc1456555db072beb1662ecd6715"
 dependencies = [
  "indexmap",
-]
-
-[[package]]
-name = "proc-macro-impls"
-version = "0.1.0"
-dependencies = [
- "merge-it",
- "proc-macro2",
- "quote",
- "syn",
- "syn-utils",
 ]
 
 [[package]]

@@ -1,5 +1,5 @@
 [package]
-name = "proc-macro-impls"
+name = "merge-it-derive"
 license.workspace = true
 version.workspace = true
 edition.workspace = true
