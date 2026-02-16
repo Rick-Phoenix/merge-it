@@ -10,12 +10,19 @@ hashbrown = { version = "0.16", optional = true }
 indexmap = { version = "2", optional = true, default-features = false }
 ordermap = { version = "1", optional = true, default-features = false }
 proc-macro-impls = { path = "../proc_macro/" }
+document-features = { version = "0.2", optional = true }
 
 [features]
 default = ["std", "alloc"]
 
+document-features = ["dep:document-features"]
+## Enables the implementations for IndexMap/IndexSet
 indexmap = ["alloc", "dep:indexmap"]
+## Enables the implementations for hashbrown's HashMap/HashSet
 hashbrown = ["alloc", "dep:hashbrown"]
+## Enables the implementations for OrderMap/OrderSet
 ordermap = ["alloc", "dep:ordermap"]
+## Enables the implementations for HashMap/HashSet
 std = ["ordermap?/std", "indexmap?/std"]
+## Enables the implementations for collections
 alloc = []

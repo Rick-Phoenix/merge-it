@@ -3,6 +3,13 @@
 #![deny(clippy::std_instead_of_alloc)]
 #![deny(clippy::std_instead_of_core)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
+#![doc = include_str!("../README.md")]
+//!
+//! ## Features
+#![cfg_attr(
+		feature = "document-features",
+		doc = ::document_features::document_features!()
+)]
 
 #[cfg(any(test, feature = "std"))]
 extern crate std;
