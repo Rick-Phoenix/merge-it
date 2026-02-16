@@ -1,6 +1,6 @@
-A small utility crate for merging values, mostly useful when dealing with things like configuration files.
+Merge-it is a crate that generates merging logic for structs and enums.
 
-Inspired by the [merge](https://crates.io/crates/merge) crate, with a few improvements:
+It was inspired by the [merge](https://crates.io/crates/merge) crate and it works similarly, but with the following improvements:
 
 1. If no merging strategy is specified, [`Merge::merge`](crate::Merge::merge) is used by default.
 2. [`Merge`](crate::Merge) is automatically implemented for all commonly used collections such as vectors, BTreeMap/BTreeSet, HashMap/HashSet (both the std and the hashbrown variants for `no_std` support), IndexMap/IndexSet, OrderMap/OrderSet.

@@ -32,5 +32,5 @@ hashbrown = ["alloc", "dep:hashbrown"]
 ordermap = ["alloc", "dep:ordermap"]
 ## Enables the implementations for HashMap/HashSet
 std = ["ordermap?/std", "indexmap?/std"]
-## Enables the implementations for collections
+## Enables the implementations that require the `alloc` crate
 alloc = []

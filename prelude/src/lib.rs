@@ -92,12 +92,25 @@ mod alloc_impls {
 	use super::*;
 
 	use alloc::{
+		borrow::Cow,
 		boxed::Box,
 		collections::{BTreeMap, BTreeSet, btree_map::Entry},
 		vec::Vec,
 	};
 
-	impl<T: Merge> Merge<Box<T>> for Box<T> {
+	impl<'a, T: Merge + Clone> Merge for Cow<'a, T> {
+		fn merge(&mut self, other: Self) {
+			self.to_mut().merge(other.into_owned());
+		}
+	}
+
+	impl<'a, T: Merge + Clone> Merge<T> for Cow<'a, T> {
+		fn merge(&mut self, other: T) {
+			self.to_mut().merge(other);
+		}
+	}
+
+	impl<T: Merge> Merge for Box<T> {
 		#[inline]
 		fn merge(&mut self, other: Self) {
 			T::merge(self, *other);
